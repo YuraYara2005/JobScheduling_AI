@@ -82,3 +82,65 @@ class BacktrackingSolver:
             # --- D. UNDO (Backtrack) ---
             self.next_op_indices[op.job_id] -= 1 # Reset pointer
             current_schedule.remove_last_assignment(machine_id, op)
+
+
+
+
+
+
+
+
+def run_test():
+    print("=== Setting up Test Scenario ===")
+    
+    # --- 1. Create Data (The Problem) ---
+    # Scenario: 2 Jobs, 2 Machines
+    # We manually create the objects instead of using data_loader.py
+    
+    # JOB 0: Machine 0 (3 mins) -> Machine 1 (2 mins)
+    job0_ops = [
+        JobOperation(job_id=0, machine_id=0, duration=3, sequence_order=0),
+        JobOperation(job_id=0, machine_id=1, duration=2, sequence_order=1)
+    ]
+    job0 = Job(id=0, operations=job0_ops)
+
+    # JOB 1: Machine 0 (2 mins) -> Machine 1 (4 mins)
+    job1_ops = [
+        JobOperation(job_id=1, machine_id=0, duration=2, sequence_order=0),
+        JobOperation(job_id=1, machine_id=1, duration=4, sequence_order=1)
+    ]
+    job1 = Job(id=1, operations=job1_ops)
+
+    all_jobs = [job0, job1]
+    num_machines = 2
+
+    # --- 2. Run Backtracking (The Solution) ---
+    print("Running Solver...")
+    solver = BacktrackingSolver(all_jobs, num_machines)
+    best_schedule = solver.solve()
+
+    # --- 3. Validate Results ---
+    print("\n=== Final Schedule Results ===")
+    
+    if best_schedule is None:
+        print("❌ Error: Solver returned None!")
+        return
+
+    print(f"Total Makespan: {best_schedule.makespan} (Target: 8)")
+    
+    # Print what happened on each machine
+    for machine_id, tasks in best_schedule.assignments.items():
+        print(f"\nMachine {machine_id}:")
+        # Sort tasks by start time just for reading clarity
+        sorted_tasks = sorted(tasks, key=lambda x: x[0])
+        for start, end, job_id in sorted_tasks:
+            print(f"  [Time {start}-{end}] Job {job_id}")
+
+    # Final Check
+    if best_schedule.makespan == 8:
+        print("\n✅ SUCCESS: Optimal schedule found!")
+    else:
+        print(f"\n⚠️ WARNING: Found makespan {best_schedule.makespan}, but optimal is 8.")
+
+if __name__ == "__main__":
+    run_test()
