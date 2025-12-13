@@ -4,6 +4,9 @@ from typing import List, Tuple, Any
 
 from models import Job, JobOperation, Schedule
 
+MAX_BACKTRACKING_JOBS = 5
+
+
 # monkey patch Schedule.remove_last_assignment ---
 _original_remove = Schedule.remove_last_assignment
 def _patched_remove_last_assignment(self, machine_id, *args):
@@ -143,6 +146,14 @@ def main():
     choice = read_int("Select (1/2/3): ", min_val=1, default=3)
 
     if choice == 1:
+        if len(jobs) > MAX_BACKTRACKING_JOBS:
+            print(
+                f"\nBacktracking cannot be run for more than {MAX_BACKTRACKING_JOBS} jobs "
+                "because it becomes too slow.\n"
+                "Please reduce the number of jobs or choose the Cultural Algorithm."
+            )
+            return
+
         wrapped, elapsed = run_backtracking(jobs, num_machines)
         print_schedule_details("Backtracking", wrapped, elapsed)
     elif choice == 2:
@@ -151,8 +162,14 @@ def main():
         best_ind, elapsed, _ = run_cultural(jobs, num_machines, pop=pop, gen=gen)
         print_schedule_details("Cultural", best_ind, elapsed)
     else:
-        wrapped, bt_elapsed = run_backtracking(jobs, num_machines)
-        print_schedule_details("Backtracking", wrapped, bt_elapsed)
+        if len(jobs) > MAX_BACKTRACKING_JOBS:
+            print(
+                f"\nSkipping Backtracking: more than {MAX_BACKTRACKING_JOBS} jobs "
+                "would take too long."
+            )
+        else:
+            wrapped, bt_elapsed = run_backtracking(jobs, num_machines)
+            print_schedule_details("Backtracking", wrapped, bt_elapsed)
 
         pop = read_int("Population size (default 40): ", min_val=1, default=40)
         gen = read_int("Generations (default 120): ", min_val=1, default=120)
