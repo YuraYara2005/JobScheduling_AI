@@ -14,20 +14,20 @@ Schedule.remove_last_assignment = _patched_remove_last_assignment
 
 # Try to import solvers
 try:
-    from backtracking import BacktrackingSolver
+    from algorithms.backtracking import BacktrackingSolver
 except Exception as e:
     BacktrackingSolver = None
     print("Warning: backtracking import failed:", e)
 
 try:
-    from cultural_algo import CulturalAlgorithmSolver  # your modified CA
+    from algorithms.cultural_algo import CulturalAlgorithmSolver  # your modified CA
 except Exception as e:
     CulturalAlgorithmSolver = None
     print("Warning: cultural_algo import failed:", e)
 
 # Optional visualization function
 try:
-    from visiualization import draw_gantt_chart
+    from GUI.visiualization import draw_gantt_chart
 except Exception:
     draw_gantt_chart = None
 
