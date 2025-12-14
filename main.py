@@ -1,5 +1,4 @@
 import time
-import sys
 from typing import List, Tuple, Any
 
 from models import Job, JobOperation, Schedule
