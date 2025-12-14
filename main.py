@@ -1,5 +1,4 @@
 import time
-import sys
 from typing import List, Tuple, Any
 
 from models import Job, JobOperation, Schedule
@@ -139,42 +138,53 @@ def main():
     jobs, num_machines = read_job_input()
     print(f"\nLoaded {len(jobs)} jobs, {num_machines} machines.")
 
-    print("\nChoose solver to run:")
-    print(" 1) Backtracking")
-    print(" 2) Cultural Algorithm")
-    print(" 3) Both (Backtracking then Cultural)")
-    choice = read_int("Select (1/2/3): ", min_val=1, default=3)
+    while True:
+        print("\nChoose solver to run:")
+        print(" 1) Backtracking")
+        print(" 2) Cultural Algorithm")
+        print(" 3) Both (Backtracking then Cultural)")
+        print(" 0) Exit")
+        choice = read_int("Select (0/1/2/3): ", min_val=0, default=3)
 
-    if choice == 1:
-        if len(jobs) > MAX_BACKTRACKING_JOBS:
-            print(
-                f"\nBacktracking cannot be run for more than {MAX_BACKTRACKING_JOBS} jobs "
-                "because it becomes too slow.\n"
-                "Please reduce the number of jobs or choose the Cultural Algorithm."
-            )
-            return
+        if choice == 0:
+            print("Exiting.")
+            break
 
-        wrapped, elapsed = run_backtracking(jobs, num_machines)
-        print_schedule_details("Backtracking", wrapped, elapsed)
-    elif choice == 2:
-        pop = read_int("Population size (default 40): ", min_val=1, default=40)
-        gen = read_int("Generations (default 120): ", min_val=1, default=120)
-        best_ind, elapsed, _ = run_cultural(jobs, num_machines, pop=pop, gen=gen)
-        print_schedule_details("Cultural", best_ind, elapsed)
-    else:
-        if len(jobs) > MAX_BACKTRACKING_JOBS:
-            print(
-                f"\nSkipping Backtracking: more than {MAX_BACKTRACKING_JOBS} jobs "
-                "would take too long."
-            )
-        else:
-            wrapped, bt_elapsed = run_backtracking(jobs, num_machines)
-            print_schedule_details("Backtracking", wrapped, bt_elapsed)
+        if choice == 1:
+            if len(jobs) > MAX_BACKTRACKING_JOBS:
+                print(
+                    f"\nBacktracking cannot be run for more than {MAX_BACKTRACKING_JOBS} jobs "
+                    "because it becomes too slow.\n"
+                    "Please reduce the number of jobs or choose the Cultural Algorithm."
+                )
+                continue  # 🔁 go back to menu
 
-        pop = read_int("Population size (default 40): ", min_val=1, default=40)
-        gen = read_int("Generations (default 120): ", min_val=1, default=120)
-        best_ind, ca_elapsed, _ = run_cultural(jobs, num_machines, pop=pop, gen=gen)
-        print_schedule_details("Cultural", best_ind, ca_elapsed)
+            wrapped, elapsed = run_backtracking(jobs, num_machines)
+            print_schedule_details("Backtracking", wrapped, elapsed)
+            break
+
+        elif choice == 2:
+            pop = read_int("Population size (default 40): ", min_val=1, default=40)
+            gen = read_int("Generations (default 120): ", min_val=1, default=120)
+            best_ind, elapsed, _ = run_cultural(jobs, num_machines, pop=pop, gen=gen)
+            print_schedule_details("Cultural", best_ind, elapsed)
+            break
+
+        elif choice == 3:
+            if len(jobs) > MAX_BACKTRACKING_JOBS:
+                print(
+                    f"\nSkipping Backtracking: more than {MAX_BACKTRACKING_JOBS} jobs "
+                    "would take too long."
+                )
+            else:
+                wrapped, bt_elapsed = run_backtracking(jobs, num_machines)
+                print_schedule_details("Backtracking", wrapped, bt_elapsed)
+
+            pop = read_int("Population size (default 40): ", min_val=1, default=40)
+            gen = read_int("Generations (default 120): ", min_val=1, default=120)
+            best_ind, ca_elapsed, _ = run_cultural(jobs, num_machines, pop=pop, gen=gen)
+            print_schedule_details("Cultural", best_ind, ca_elapsed)
+            break
 
     print("\nDone.")
 
