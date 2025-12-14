@@ -1,4 +1,4 @@
-Intelligent Job Scheduling Solver
+#Intelligent Job Scheduling Solver
 A Python-based application that solves the Job Scheduling Problem (JSP) using Backtracking Search and Cultural Algorithms. Features a complete GUI for data input, visualization, and algorithm comparison.
 
 🚀 Features
@@ -17,7 +17,7 @@ Clone the repo:
 
 Bash
 
-git clone https://github.com/yourusername/Job_Sch_AI.git
+git clone https://github.com/YuraYara2005/JobScheduling_AI.git
 cd Job_Sch_AI
 Install dependencies:
 
